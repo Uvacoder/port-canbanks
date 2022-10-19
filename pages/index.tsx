@@ -14,8 +14,12 @@ import matter from 'gray-matter'
 import decorativePatterns from '../public/img/decorative/background-patterns.png'
 import { WebmeisterGradientLogo } from '../components/logo'
 import { LinkIcon } from '../components'
+import { useWindowSize } from '../lib/hooks'
+import { DIMENSIONS } from '../settings'
 
 function Home({ featuredPosts, turkishPosts, englishPosts }) {
+    const vw = useWindowSize()
+    const OFFSET_LEFT = (vw - (vw - DIMENSIONS.SIDEBAR_MAX_WIDTH)) / 2
     return (
         <>
             <Head>
@@ -31,144 +35,149 @@ function Home({ featuredPosts, turkishPosts, englishPosts }) {
                     cover={site.cover}
                 />
             </Head>
-            <main className="content-section main z-20 px-4 pt-16 sm:pt-16">
-                <div className="">
-                    <div className="max-w-screen-2xl px-4 md:px-8 pb-40">
-                        <HeroDark />
+            <div className="flex flex-col relative items-center justify-start w-full  min-h-screen max-h-screen overflow-y-scroll overflow-x-hidden">
+                <motion.main
+                    style={{ left: OFFSET_LEFT }}
+                    className="content-section main z-20 pt-16 sm:pt-16"
+                >
+                    <div className="">
+                        <div className="w-full pb-40">
+                            <HeroDark />
 
-                        {/* FEATURED */}
-                        <div className="mb-8 animate-text-2xl">
-                            <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
-                                Featured posts
-                            </h2>
+                            {/* FEATURED */}
+                            <div className="mb-8 animate-text-2xl">
+                                <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
+                                    Featured posts
+                                </h2>
 
-                            <p className="max-w-screen-md text-gray-500 md:text-lg text-left">
-                                Some of the blog posts that are written in Turkish and English.
-                            </p>
-                        </div>
-                        <ul className="grid sm:grid-cols-1 lg:grid-cols-2  gap-4 md:gap-6 xl:gap-8 animate-text-3xl">
-                            <ListItemCard
-                                title={'Blog Siteleri'}
-                                cover={'/posts/covers/blog-yazma-siteleri.webp'}
-                                slug={'en-iyi-blog-siteleri/'}
-                                topic={'blog-acmak'}
-                                description={
-                                    "50'den fazla blog yazma sitesini barındıran bir liste. Ayrıca çeşitli amaçlarla blog açma isteyenlere tavsiyeler barındırır."
-                                }
-                            />
-                            <ListItemCard
-                                title={'Notion Kaynakları'}
-                                cover={'/posts/notion/notion.jpg'}
-                                slug={'notion-sablonlari-ve-ucretsiz-site-olusturmak/'}
-                                topic={'blog-acmak'}
-                                description={
-                                    'Notion uygulaması ile yapabileceklerinizin sınırlarını zorlayan araçlar, ve bir çok kullanım için hazırlanmış şablonların listesi.'
-                                }
-                            />
-                        </ul>
-
-                        <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8 animate-text-4xl">
-                            {featuredPosts.map((post, index) => (
+                                <p className="max-w-screen-md text-gray-500 md:text-lg text-left">
+                                    Some of the blog posts that are written in Turkish and English.
+                                </p>
+                            </div>
+                            <ul className="grid sm:grid-cols-1 lg:grid-cols-2  gap-4 md:gap-6 xl:gap-8 animate-text-3xl">
                                 <ListItemCard
-                                    title={post.frontMatter.title}
-                                    cover={post.frontMatter.cover}
-                                    keywords={post.frontMatter.keywords}
-                                    slug={post.frontMatter.slug}
-                                    topic={post.frontMatter.topic}
-                                    key={'home-featured-' + post.frontMatter.slug}
+                                    title={'Blog Siteleri'}
+                                    cover={'/posts/covers/blog-yazma-siteleri.webp'}
+                                    slug={'en-iyi-blog-siteleri/'}
+                                    topic={'blog-acmak'}
+                                    description={
+                                        "50'den fazla blog yazma sitesini barındıran bir liste. Ayrıca çeşitli amaçlarla blog açma isteyenlere tavsiyeler barındırır."
+                                    }
                                 />
-                            ))}
-                        </ul>
-
-                        {/* ENGLISH */}
-                        <div className="mt-16 md:mt-40 mb-8">
-                            <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
-                                <Link href="/en/">
-                                    <a>
-                                        Articles in English{' '}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 inline-block"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                            />
-                                        </svg>
-                                    </a>
-                                </Link>
-                            </h2>
-
-                            <p className="max-w-screen-md text-gray-500 md:text-lg text-left"></p>
-                        </div>
-
-                        <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8">
-                            {englishPosts.map((post) => (
                                 <ListItemCard
-                                    title={post.frontMatter.title}
-                                    cover={post.frontMatter.cover}
-                                    keywords={post.frontMatter.keywords}
-                                    slug={post.frontMatter.slug}
-                                    topic={post.frontMatter.topic}
-                                    key={'home-eng-' + post.frontMatter.slug}
+                                    title={'Notion Kaynakları'}
+                                    cover={'/posts/notion/notion.jpg'}
+                                    slug={'notion-sablonlari-ve-ucretsiz-site-olusturmak/'}
+                                    topic={'blog-acmak'}
+                                    description={
+                                        'Notion uygulaması ile yapabileceklerinizin sınırlarını zorlayan araçlar, ve bir çok kullanım için hazırlanmış şablonların listesi.'
+                                    }
                                 />
-                            ))}
-                        </ul>
+                            </ul>
 
-                        {/* TURKISH */}
-                        <div className="mt-16 md:mt-40 mb-8">
-                            <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
-                                <Link href="/tr/">
-                                    <a title="Articles written in Turkish">
-                                        Articles in Turkish{' '}
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-6 w-6 inline-block"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                strokeWidth={2}
-                                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
-                                            />
-                                        </svg>
-                                    </a>
-                                </Link>
-                            </h2>
+                            <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8 animate-text-4xl">
+                                {featuredPosts.map((post, index) => (
+                                    <ListItemCard
+                                        title={post.frontMatter.title}
+                                        cover={post.frontMatter.cover}
+                                        keywords={post.frontMatter.keywords}
+                                        slug={post.frontMatter.slug}
+                                        topic={post.frontMatter.topic}
+                                        key={'home-featured-' + post.frontMatter.slug}
+                                    />
+                                ))}
+                            </ul>
 
-                            <p className="max-w-screen-md text-gray-500 md:text-lg text-left"></p>
+                            {/* ENGLISH */}
+                            <div className="mt-16 md:mt-40 mb-8">
+                                <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
+                                    <Link href="/en/">
+                                        <a>
+                                            Articles in English{' '}
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-6 w-6 inline-block"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                                />
+                                            </svg>
+                                        </a>
+                                    </Link>
+                                </h2>
+
+                                <p className="max-w-screen-md text-gray-500 md:text-lg text-left"></p>
+                            </div>
+
+                            <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8">
+                                {englishPosts.map((post) => (
+                                    <ListItemCard
+                                        title={post.frontMatter.title}
+                                        cover={post.frontMatter.cover}
+                                        keywords={post.frontMatter.keywords}
+                                        slug={post.frontMatter.slug}
+                                        topic={post.frontMatter.topic}
+                                        key={'home-eng-' + post.frontMatter.slug}
+                                    />
+                                ))}
+                            </ul>
+
+                            {/* TURKISH */}
+                            <div className="mt-16 md:mt-40 mb-8">
+                                <h2 className="text-gray-800 text-4xl lg:text-5xl text-left mb-4 md:mb-6">
+                                    <Link href="/tr/">
+                                        <a title="Articles written in Turkish">
+                                            Articles in Turkish{' '}
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-6 w-6 inline-block"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
+                                                />
+                                            </svg>
+                                        </a>
+                                    </Link>
+                                </h2>
+
+                                <p className="max-w-screen-md text-gray-500 md:text-lg text-left"></p>
+                            </div>
+
+                            <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8">
+                                {turkishPosts.map((post) => (
+                                    <ListItemCard
+                                        title={post.frontMatter.title}
+                                        cover={post.frontMatter.cover}
+                                        keywords={post.frontMatter.keywords}
+                                        slug={post.frontMatter.slug}
+                                        topic={post.frontMatter.topic}
+                                        key={'home-tr-' + post.frontMatter.slug}
+                                    />
+                                ))}
+                            </ul>
                         </div>
-
-                        <ul className="grid sm:grid-cols-2 lg:grid-cols-3  gap-4 md:gap-6 xl:gap-8">
-                            {turkishPosts.map((post) => (
-                                <ListItemCard
-                                    title={post.frontMatter.title}
-                                    cover={post.frontMatter.cover}
-                                    keywords={post.frontMatter.keywords}
-                                    slug={post.frontMatter.slug}
-                                    topic={post.frontMatter.topic}
-                                    key={'home-tr-' + post.frontMatter.slug}
-                                />
-                            ))}
-                        </ul>
                     </div>
-                </div>
-            </main>
+                </motion.main>
+            </div>
         </>
     )
 }
 
 export function HeroDark() {
     return (
-        <header className="relative w-full overflow-hidden z-20 hero">
+        <header className="relative max-w-full overflow-hidden z-20 hero">
             <div className="relative top-0 right-0 bottom-0 left-0 w-full h-auto">
                 <div className="relative max-w-7xl z-10">
                     <div className="absolute top-0 right-0 hidden w-full h-full -ml-32 transform scale-100 translate-x-1/2 translate-y-20  md:block -rotate-12 opacity-90" />

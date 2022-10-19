@@ -1,9 +1,9 @@
 // @ts-nocheck
-import React from 'react';
-import { useEffect, useState } from 'react';
+import React from 'react'
+import { useEffect, useState } from 'react'
 import Head from 'next/head'
 import Script from 'next/script'
-import { MantineProvider, Button } from '@mantine/core';
+import { MantineProvider, Button } from '@mantine/core'
 
 import '../styles/tailwind.css'
 import '../styles/globals.css'
@@ -11,8 +11,9 @@ import type { AppProps } from 'next/app'
 import Layout from '../layout/layout'
 //import { site } from "../settings"
 //import { MetaTags } from "../components/next-seo"
-import { useHasMounted, useDebounce } from "../lib/hooks"
+import { useHasMounted, useDebounce } from '../lib/hooks'
 //import { CssBaseline } from '@nextui-org/react';
+import { NextUIProvider } from '@nextui-org/react'
 
 // export type Status = 'idle' | 'loading' | 'ready' | 'error'
 // export type ScriptElt = HTMLScriptElement | null
@@ -20,7 +21,7 @@ import { useHasMounted, useDebounce } from "../lib/hooks"
 //export function reportWebVitals(metric) {
 //    //console.log(metric)
 //}
-import { Commander } from "../components"
+import { Commander } from '../components'
 
 function MyApp({ Component, pageProps }: AppProps) {
     const hasMounted = useHasMounted()
@@ -55,20 +56,25 @@ function MyApp({ Component, pageProps }: AppProps) {
 
                 </Head>*/}
                 <Script
-                    strategy="lazyOnload"
-                    src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
+                    async
+                    src="https://www.googletagmanager.com/gtag/js?id=G-M492EQF9QH"
+                    strategy="worker"
+                ></Script>
+                <Script
+                    id="google-analytics"
+                    strategy="afterInteractive"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                                window.dataLayer = window.dataLayer || [];
+                                function gtag(){dataLayer.push(arguments)}
+                                gtag('js', new Date());
+                                gtag('config', 'G-M492EQF9QH');
+                            `,
+                    }}
                 />
-                <Script id="ga-analytics">
-                    {`
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-
-                            gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}');
-                        `}
-                </Script>
-
-                <Component {...pageProps} />
+                <NextUIProvider>
+                    <Component {...pageProps} />
+                </NextUIProvider>
             </Layout>
 
             {/* MESH GRADIENTS */}
