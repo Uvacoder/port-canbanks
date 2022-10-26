@@ -28,6 +28,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { Commander } from '../components'
 import { DIMENSIONS } from '../settings'
+import { useStore } from '../lib/state'
 const userNavigation = [
     { name: 'Your Profile', href: '#' },
     { name: 'Settings', href: '#' },
@@ -44,16 +45,17 @@ export default function Layout({ children }) {
     const hasMounted = useHasMounted()
     const shouldLoadScripts = useDebounce(hasMounted, 5000)
     //console.log("loading scripts", shouldLoadScripts)
-    const [sidebarOpen, setSidebarOpen] = useState(true)
-    const toggle = () => setSidebarOpen(!sidebarOpen)
+    const sidebarOpen = useStore((store) => store.sidebarOpen)
+    const toggle = useStore((store) => store.toggle)
+
     const navigation = navLinks.map((navlink) =>
         navlink.href === router.asPath ? { ...navlink, current: true } : navlink
     )
     return (
-        <motion.div className="h-full min-h-screen flex !overflow-x-hidden relative z-10 !bg-transparent !max-w-[100vw]">
+        <motion.div className="h-full min-h-screen flex justify-start !overflow-x-hidden relative z-10 !bg-transparent !max-w-[100vw]">
             <motion.div
                 style={{
-                    position: 'sticky',
+                    position: 'fixed',
                     left: 0,
                     top: 0,
                     bottom: 0,
@@ -75,12 +77,18 @@ export default function Layout({ children }) {
             <motion.div
                 variants={variants}
                 animate={sidebarOpen ? 'open' : 'closed'}
-                style={{ width: '100%', maxWidth: DIMENSIONS.SIDEBAR_MAX_WIDTH, zIndex: 20 }}
+                style={{
+                    position: 'fixed',
+                    marginLeft: DIMENSIONS.SETTINGS_PANEL_WIDTH,
+                    width: DIMENSIONS.NAVPANEL_WIDTH,
+                    maxWidth: DIMENSIONS.SIDEBAR_MAX_WIDTH,
+                    zIndex: 50,
+                }}
                 id="sidebar"
                 className="gradientbox relative"
             >
                 <motion.div className="fixed left-0 top-0  bottom-0 min-h-screen blur-2xl z-20"></motion.div>
-                <motion.div className="sticky w-full h-screen max-h-[100vh] overflow-y-scroll lefft-0 top-0 z-20 pt-8 pl-[54px] bg-[rgba(0,0,0,0.8)]">
+                <motion.div className="sticky w-full h-screen max-h-[100vh] overflow-y-auto lefft-0 top-0 z-20 pt-8  bg-[rgba(0,0,0,0.85)]">
                     <Accordion type="single" collapsible className="">
                         {navigation.map((item, i) =>
                             item.children ? (
@@ -115,18 +123,21 @@ export default function Layout({ children }) {
                     </Accordion>
                 </motion.div>
             </motion.div>
+
+            {/* MAIN */}
             <motion.div
                 style={{
-                    width: `calc(100vw - ${DIMENSIONS.SIDEBAR_MAX_WIDTH})`,
-                    maxWidth: '100vw',
+                    position: 'relative',
+                    width: '100%',
+                    maxWidth: `calc(100vw - ${DIMENSIONS.SIDEBAR_MAX_WIDTH})`,
                     left: 0,
                     top: 0,
                     bottom: 0,
                     right: 0,
                 }}
-                variants={variantsMain}
-                animate={sidebarOpen ? 'open' : 'close'}
-                className="absolute from-gray-900 to-gray-600 bg-gradient-to-r flex flex-col min-h-screen flex-grow"
+                // variants={variantsMain}
+                // animate={sidebarOpen ? 'open' : 'close'}
+                className="relative from-gray-900 to-gray-800 bg-gradient-to-r flex flex-col items-center min-h-screen flex-grow"
             >
                 {children}
             </motion.div>
@@ -139,10 +150,10 @@ const variants = {
 }
 const variantsMain = {
     open: {
-        x: DIMENSIONS.SIDEBAR_MAX_WIDTH,
+        x: 0,
         transition: { duration: 0.4, ease: [0, 0.71, 0.2, 1.01] },
     },
-    closed: { left: 0, width: '100vw' },
+    closed: { x: DIMENSIONS.SETTINGS_PANEL_WIDTH, width: '100vw' },
 }
 const MenuToggle = ({ onClick, ...props }) => (
     <svg

@@ -16,10 +16,14 @@ import { WebmeisterGradientLogo } from '../components/logo'
 import { LinkIcon } from '../components'
 import { useWindowSize } from '../lib/hooks'
 import { DIMENSIONS } from '../settings'
+import { motion } from 'framer-motion'
+import { useStore } from '../lib/state'
 
 function Home({ featuredPosts, turkishPosts, englishPosts }) {
     const vw = useWindowSize()
     const OFFSET_LEFT = (vw - (vw - DIMENSIONS.SIDEBAR_MAX_WIDTH)) / 2
+    const sidebarOpen = useStore((store) => store.sidebarOpen)
+
     return (
         <>
             <Head>
@@ -35,11 +39,12 @@ function Home({ featuredPosts, turkishPosts, englishPosts }) {
                     cover={site.cover}
                 />
             </Head>
-            <div className="flex flex-col relative items-center justify-start w-full  min-h-screen max-h-screen overflow-y-scroll overflow-x-hidden">
-                <motion.main
-                    style={{ left: OFFSET_LEFT }}
-                    className="content-section main z-20 pt-16 sm:pt-16"
-                >
+            <motion.div
+                className="flex flex-col relative items-center justify-start mx-auto"
+                variants={variants}
+                animate={sidebarOpen ? 'open' : 'closed'}
+            >
+                <motion.main className="content-section main z-20 pt-16 sm:pt-16 mx-auto max-w-[900px]">
                     <div className="">
                         <div className="w-full pb-40">
                             <HeroDark />
@@ -170,9 +175,18 @@ function Home({ featuredPosts, turkishPosts, englishPosts }) {
                         </div>
                     </div>
                 </motion.main>
-            </div>
+            </motion.div>
         </>
     )
+}
+
+const variants = {
+    open: {
+        x: 0,
+        marginLeft: DIMENSIONS.SIDEBAR_MAX_WIDTH,
+        transition: { duration: 0.4, ease: [0, 0.71, 0.2, 1.01] },
+    },
+    closed: { x: 0, marginLeft: DIMENSIONS.SETTINGS_PANEL_WIDTH },
 }
 
 export function HeroDark() {
