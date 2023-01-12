@@ -2,7 +2,7 @@
 import React, { useCallback, useState } from 'react'
 import { Controlled as ControlledZoom } from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
-import Image from 'next/image'
+import Image from "next/legacy/image";
 
 export const ResponsiveImage = props => (
     <Image alt={props.alt} layout="responsive" {...props} loading="lazy" />

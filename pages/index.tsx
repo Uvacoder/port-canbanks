@@ -2,7 +2,7 @@
 import React from 'react'
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import Image from 'next/image'
+import Image from "next/legacy/image";
 import Link from 'next/link'
 import Footer from '../layout/footer'
 import { RichData, MetaTags, ListItemCard } from '../components'

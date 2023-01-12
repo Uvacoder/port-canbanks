@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Image from "next/legacy/image";
 
 import filiz from '../public/img/decorative/decorative-7.webp'
 import goldgrain from '../public/img/decorative/decorative-5.webp'
