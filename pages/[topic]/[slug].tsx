@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'

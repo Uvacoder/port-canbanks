@@ -1,6 +1,6 @@
 // @ts-nocheck
 import React from "react";
-import Image from "next/legacy/image";
+import Image from "next/image";
 import dynamic from "next/dynamic";
 import Head from "next/head";
 import Script from "next/script";
@@ -62,10 +62,24 @@ export default function MdxProvider({
             </div>
         ),
         img: (props) => (
-            <Image {...props} loading="lazy" layout="responsive" width="1400" height="700" />
+            <Image
+                {...props}
+                loading="lazy"
+                width="1400"
+                height="700"
+                sizes="100vw"
+                style={{
+                    width: "100%",
+                    height: "auto"
+                }} />
         ),
         ImageZoom: (props) => <ImageZoom {...props} />,
-        Image: (props) => <Image {...props} />,
+        Image: (props) => <Image
+            {...props}
+            style={{
+                maxWidth: "100%",
+                height: "auto"
+            }} />,
 
         Hr: () => <Hr />,
 

@@ -1,4 +1,4 @@
-import Image from "next/legacy/image";
+import Image from "next/image";
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 
@@ -137,13 +137,12 @@ export function _ListItemCard(props: CardProps) {
         }`}
     >
       <Image
-        layout="fill"
-        sizes="30vw"
         loading="lazy"
         src={props.thumbnail || props.cover || '/img/placeholder.webp'}
         alt={(props.keywords && props.keywords[0]) || props.title}
         className="w-full h-full object-cover object-center absolute inset-0 transform group-hover:scale-110 transition duration-700 z-0"
-      />
+        fill
+        sizes="30vw" />
 
       <div className="bg-[rgba(0,0,0,0.5)] hover:blur-md absolute inset-0 pointer-events-none"></div>
 
@@ -166,7 +165,7 @@ export function _ListItemCard(props: CardProps) {
         <a title={props.title} className="group absolute top-0 left-0 right-0 bottom-0" />
       </Link>
     </li>
-  )
+  );
 }
 export function ListItemCard(props: CardProps) {
   return (
