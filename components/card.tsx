@@ -194,7 +194,7 @@ export function ListItemCard(props: CardProps) {
         <Link href={`/${props.topic}/${props.slug}`} legacyBehavior>
           <motion.a title={props.title} className="group">
             <AnimatePresence>
-              <motion.h3 exit={{opacity:0}} layoutId={props.slug} className="!text-white text-lg font-semibold transition duration-500 mb-2 z-10 relative translate-y-20 group-hover:translate-y-0">
+              <motion.h3 exit={{opacity:0}} layoutId={props.slug + "-title"} className="!text-white text-lg font-semibold transition duration-500 mb-2 z-10 relative translate-y-20 group-hover:translate-y-0">
                 {props.title}
               </motion.h3>
             </AnimatePresence>
