@@ -47,9 +47,7 @@ export function CardEnlarge(props: CardProps) {
           data-tip={props.excerpt}
         >
           <div className="flex flex-col p-0 m-0">
-            <AnimatePresence>
-              <motion.a
-                layoutId={props.slug}
+              <a
                 target="_blank"
                 title={props.title}
                 href={props.link}
@@ -57,8 +55,7 @@ export function CardEnlarge(props: CardProps) {
                 rel={props.nofollow ? 'nofollow noopener' : 'noopener'}
               >
                 <h3 className="text-gray-800 text-xl font-bold mt-2">{props.title}</h3>
-              </motion.a>
-            </AnimatePresence>
+              </a>
             <p className="text-gray-500 text-md mt-2 mb-2 leading-6 overflow-ellipsis overflow-hidden text-sm">
               {props.description || props.excerpt}
             </p>

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { useRouter } from 'next/router'
 import Script from 'next/script'
 import { serialize } from 'next-mdx-remote/serialize'
@@ -32,6 +32,8 @@ import { PostHeader } from '../../components/styled'
 import { AnimatePresence, motion } from 'framer-motion'
 const MdxProvider = dynamic(() => import('../../components/mdx/mdx-provider'))
 const ScrollTopButton = dynamic(() => import('../../components/button'))
+import { Dropdown } from "@nextui-org/react";
+import LinkPreview from '../../components/mdx/link-preview'
 
 const PostPage = ({ slug, topic, frontMatter, mdxSource, relatedPosts }) => {
   const router = useRouter()
@@ -66,21 +68,17 @@ const PostPage = ({ slug, topic, frontMatter, mdxSource, relatedPosts }) => {
 
       {/*<p className="animate-text-xl max-w-screen-md text-gray-500 md:text-lg text-center mx-auto mt-20 sm:mt-8 mb-40 sm:mb-4">{frontMatter.description}</p>*/}
       <div className="relative h-auto min-h-[250px] sm:min-h-[300px] md:min-h-[400px] w-full overflow-hidden rounded-lg mt-12 mb-4 flex flex-col justify-end">
-          <motion.img
-            layoutId={frontMatter.slug + "-img"}
-            exit={{ opacity: 0 }}
-            id="primary-image"
-            layout="intrinsic"
-            width={2200}
-            height={1400}
-            priority
-            //loading="lazy"
-            placeholder="blur"
-            blurDataURL="/img/placeholder.webp"
-            src={frontMatter.thumbnail || frontMatter.cover || '/img/placeholder.webp'}
-            alt={(frontMatter.keywords && frontMatter.keywords[0]) || frontMatter.name}
-            className="animate-text-2xl w-full h-full object-cover object-center absolute inset-0 transform group-hover:scale-110 transition duration-200 z-0"
-          />
+        <motion.img
+          exit={{ opacity: 0 }}
+          id="primary-image"
+          width={2200}
+          height={1400}
+          //loading="lazy"
+          placeholder="blur"
+          src={frontMatter.thumbnail || frontMatter.cover || '/img/placeholder.webp'}
+          alt={(frontMatter.keywords && frontMatter.keywords[0]) || frontMatter.name}
+          className="animate-text-2xl w-full h-full object-cover object-center absolute inset-0 transform group-hover:scale-110 transition duration-200 z-0"
+        />
       </div>
       <div className="flex flex-wrap justify-center !max-w-6xl  mb-4 relative z-10 frontmatter-section-tags">
         {tags?.map((tag) => (
@@ -96,10 +94,10 @@ const PostPage = ({ slug, topic, frontMatter, mdxSource, relatedPosts }) => {
   ))
 
   useEffect(() => {
-    const headers2 = Array.from(document.querySelectorAll('h2')).map(el => ({ id: el.getAttribute("id"), text: el.innerText, level: 2 }))
-    const headers3 = Array.from(document.querySelectorAll('h3')).map(el => ({ id: el.getAttribute("id"), text: el.innerText, level: 3 }))
-    const headers4 = Array.from(document.querySelectorAll('h4')).map(el => ({ id: el.getAttribute("id"), text: el.innerText, level: 4 }))
-    const headers = [...headers2, ...headers3, ...headers4].filter(el => Boolean(el.id))
+    const headers2 = Array.from(document.querySelectorAll('h2')).map(el => ({ key: el.getAttribute("id"), name: el.innerText, level: 2 }))
+    const headers3 = Array.from(document.querySelectorAll('h3')).map(el => ({ key: el.getAttribute("id"), name: el.innerText, level: 3 }))
+    const headers4 = Array.from(document.querySelectorAll('h4')).map(el => ({ key: el.getAttribute("id"), name: el.innerText, level: 4 }))
+    const headers = [...headers2, ...headers3, ...headers4].filter(el => Boolean(el.key))
     console.log("headers", headers)
     setHs(headers)
   }, [])
@@ -156,6 +154,9 @@ const PostPage = ({ slug, topic, frontMatter, mdxSource, relatedPosts }) => {
             </strong>
           ))}
         </div>
+        <AnimatePresence>
+          {hs.length > 0 && <Toc headers={hs} />}
+        </AnimatePresence>
       </article>
 
       <hr className="border-gray-100" />
@@ -188,7 +189,7 @@ const PostPage = ({ slug, topic, frontMatter, mdxSource, relatedPosts }) => {
 }
 
 const variants = {
-  show: ({ opacity: 1, transition: { type:"tween", ease:"easeOut" }}),
+  show: ({ opacity: 1, transition: { type: "tween", ease: "easeOut" } }),
   hide: { height: 40, opacity: 0.8 }
 }
 
@@ -200,59 +201,56 @@ const item = {
 
 const Toc = ({ headers }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const goto = (id) => window.scrollTo({ top: document.getElementById(id).offsetTop, behavior: 'smooth' })
+  const [selected, setSelected] = useState(headers[0].key)
+  const myheaders = useMemo(() => headers.map(item => ({ ...item, key: item.key + "-key-toc" })), [headers])
+  console.log("selected", selected, myheaders)
+  const goto = (key) => document.getElementById(key.replace("-key-toc", ""))?.scrollIntoView({ behavior: 'smooth' })
+  console.log("selected", selected)
   return (
-    <motion.div style={{ 
-        position: "fixed",
-        bottom: 32,
-        marginLeft: "auto",
-        marginRight: "auto",
-        width: "40vw",
-        maxWidth: 500,
-        minWidth: 300,
-        height: "auto",
-        minHeight: 40,
-        zIndex: 10,
-        borderRadius: 20,
-        backgroundColor: "rgba(255,255,255,0.6)", backdropFilter: "blur(30px)" 
-        }}
-      >
-      <motion.ul
-        style={{
-          position: "relative",
-          listStyle: 'none',
-          padding: "4px 16px",
-          
-        }}
-        custom={headers.length}
-        initial={"hide"}
-        animate={isOpen ? "show" : "hide"}
-        variants={variants}
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        <AnimatePresence>
-          {isOpen && headers.map((header, i) => (
-            <motion.li 
-              transition={{type: "tween"}}
-              onClick={() => {goto(header.id); setIsOpen(false)}}
-              style={{
-                height:30,
-                position: "absolute",
-              }}
-              initial={{y: 0, opacity: 0}}
-              animate={{opacity:1, y: i * -30}}
-              whileHover={{ background: "#dedede" }}
-              key={"toc" + i}
-              exit={{ opacity: 0, y:i * 30 }}
+    <div style={{ position: "fixed", bottom: 32, left: "45%", width: "400px", zIndex: 10 }} id="toc-floating">
+      <Dropdown >
+        <Dropdown.Button flat
+          css={{
+            tt: "capitalize", width: "400px",
+            backdropFilter: "blur(10px)",
+            color: "black",
+            backgroundColor: "rgba(255,255,255,0.4)",
+            boxShadow: "1px 1px 4px 0px rgba(0,0,0,0.35)",
+            "&:hover": { backgroundColor: "rgba(255,255,255, 0.7)" }
+          }}>
+          Table of Contents
+        </Dropdown.Button>
+        <Dropdown.Menu
+          variant="flat"
+          aria-label="Single selection actions"
+          color="secondary"
+          selectedKeys={selected}
+          onAction={goto}
+          css={{
 
-            >
-              <span className='cursor-pointer'>{header.text}</span>
-            </motion.li>
+            width: "100%", minWidth:400, color: "black",
+            backgroundColor: "rgba(255,255,255,0.5)",
+          }}
+
+        >
+          {myheaders.map((item) => (
+            <Dropdown.Item
+              css={{
+                width:"100%",
+                minWidth: "400px", fontSize: 13, padding: 0, margin: 0, 
+
+              }}
+              key={item.key}
+              variant="flat"
+              textColor="secondary"
+              color="secondary"
+            >{item.name}
+            </Dropdown.Item>
           ))
           }
-        </AnimatePresence>
-      </motion.ul>
-    </motion.div>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
   )
 }
 
